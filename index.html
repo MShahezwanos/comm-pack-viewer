@@ -1,4 +1,3 @@
-
 <!-- ICONS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -15,413 +14,128 @@
 }
 *{box-sizing:border-box}
 
+/* ===== NEW BACKGROUND ===== */
+body{
+  background: linear-gradient(135deg,#0b2236,#00364f);
+}
+
 /* ===== layout & UI ===== */
 .comm-wrap{
   max-width:1700px;
   margin:20px auto;
-  padding:20px;
-  font-family:Inter,Segoe UI,system-ui
+  padding:30px;
+  font-family:Inter,Segoe UI,system-ui;
+
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(12px);
+  border-radius:20px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.4);
+}
+
+/* HEADER */
+.portal-header{
+  margin-bottom:25px;
+  padding:20px 25px;
+  border-radius:18px;
+  background:linear-gradient(135deg,#004d66,#007c9c);
+  color:#fff;
+  box-shadow:0 12px 30px rgba(0,0,0,.3);
 }
 
 /* FILTER BAR */
 .filter-bar{
   display:grid;
-  grid-template-columns:repeat(3,1fr) 1.6fr 120px;
+  grid-template-columns:repeat(3,1fr) 1.6fr 140px;
   gap:12px;
   margin-bottom:18px;
+
+  background: rgba(255,255,255,0.03);
+  padding:18px;
+  border-radius:16px;
+  backdrop-filter: blur(10px);
 }
+
 @media(max-width:768px){
   .filter-bar{grid-template-columns:1fr}
 }
+
 .filter-bar select,
 .filter-bar input{
   padding:13px 14px;
   border-radius:12px;
-  border:1px solid rgba(0,234,255,.35);
-  background:var(--dark);
+  border:1px solid rgba(0,234,255,.5);
+  background:#001f2e;
   color:#fff;
 }
+
 .filter-bar input::placeholder{color:#cdefff}
+
 .filter-bar button{
-  background:linear-gradient(135deg,#006d8f,#00bcd4);
+  background: linear-gradient(135deg,#00eaff,#6ffff2);
   color:#001019;
   border:none;
   border-radius:12px;
-  font-weight:800;
+  font-weight:900;
   cursor:pointer;
+  box-shadow:0 10px 25px rgba(0,234,255,.4);
 }
+
 .filter-bar button:hover{
-  background:linear-gradient(135deg,#e53935,#ff5252); /* red */
-  color:#ffffff;                                     /* white text */
-  transform:translateY(-1px);
-  box-shadow:0 8px 20px rgba(229,57,53,.35);
+  transform:translateY(-2px);
+  box-shadow:0 14px 30px rgba(0,234,255,.6);
 }
+
 .filter-item{
   display:flex;
   flex-direction:column;
 }
 
 .filter-item label{
-  font-size:11px;
+  font-size:12px;
   font-weight:800;
   text-transform:uppercase;
-  letter-spacing:.6px;
-  color:#bfefff;
-
-  /* ⬆️ push label clearly above */
+  color:#e6faff;
   margin-bottom:6px;
 }
 
-/* ===== NEW FILE BANNER ===== */
-.new-file-banner{
-  display:none;
-  background:linear-gradient(135deg,#004d66,#007c9c);
-  color:#fff;
-  padding:16px 20px;
-  border-radius:16px;
-  margin-bottom:18px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:14px;
-  box-shadow:0 10px 26px rgba(0,0,0,.18);
-}
-#newFileText{font-weight:700}
-.new-file-banner button{
-  padding:10px 18px;
-  border-radius:12px;
-  border:none;
-  font-weight:800;
-  cursor:pointer;
-  background:linear-gradient(135deg,#00eaff,#6ffff2);
-  color:#001019;
-}
-
-/* MASTERLIST BUTTON */
+/* BUTTON */
 .ml-btn{
   display:inline-flex;
   align-items:center;
   gap:10px;
-  padding:11px 20px;
+  padding:12px 22px;
   border-radius:14px;
   border:1px solid rgba(0,234,255,.35);
   background:linear-gradient(135deg,#00364f,#005f7a);
   color:#fff;
   font-weight:800;
   cursor:pointer;
-  margin-bottom:20px; /* ✅ adds breathing space */
+  box-shadow:0 10px 25px rgba(0,0,0,.25);
 }
 
-/* GRID */
-.file-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-  gap:18px
-}
-.file-card{
-  background:#fff;
-  border-radius:16px;
-  padding:16px;
-  border:1px solid var(--border);
-  position:relative;
-}
-.file-new{
-  position:absolute;
-  top:10px;
-  right:10px;
-  background:var(--danger);
-  color:#fff;
-  font-size:10px;
-  padding:4px 8px;
-  border-radius:8px;
-  font-weight:800;
-}
-.file-title{
-  font-size:15px;
-  font-weight:800;
-  color:var(--text);
-  line-height:1.35;
-  word-break:break-word;
-  overflow-wrap:anywhere;
-}
-.file-meta{
-  font-size:11px;
-  color:var(--muted);
-  margin:6px 0 12px
-}
-.file-actions{
-  display:flex;
-  gap:10px
-}
-.file-actions i{
-  font-size:15px;
-  color:#fff;
-  background:#00364f;
-  padding:9px;
-  border-radius:9px;
-  cursor:pointer;
-}
-
-/* PAGINATION */
-.pagination{
-  display:flex;
-  justify-content:center;
-  gap:6px;
-  margin-top:22px
-}
-.pagination button{
-  padding:7px 12px;
-  border-radius:8px;
-  border:1px solid #bfefff;
-  background:#00364f;
-  color:#fff;
-  font-weight:700;
-}
-.pagination button.active{
-  background:var(--accent);
-  color:#001019
-}
-
-/* ===== MASTERLIST ===== */
-.masterlist-panel{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.45);
-  display:none;
-  z-index:5000
-}
-.masterlist-panel.active{display:block}
-.masterlist-box{
-  background:#fff;
-  max-width:1100px;
-  margin:40px auto;
-  border-radius:18px;
-  overflow:hidden
-}
-
-/* ⚠️ global text rule (kept) */
-.masterlist-box,.masterlist-box *{
-  color:#0a2433 !important
-}
-
-/* ✅ HARD OVERRIDE FOR HEADER */
-.masterlist-header,
-.masterlist-header *{
-  color:#ffffff !important;
-}
-.masterlist-header{
-  background:#0b2236;
-  padding:16px 20px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  font-weight:900;
-  position:relative; /* ✅ IMPORTANT */
-}
-/* 🔴 CLOSE (X) BUTTON */
-.masterlist-header button{
-  background:#e53935;
-  color:#ffffff;
-  border:none;
-  width:34px;
-  height:34px;
-  border-radius:8px;
-  font-size:16px;
-  font-weight:900;
-  cursor:pointer;
-
-  /* ✅ keep it inside header */
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.masterlist-header button:hover{
-  background:#c62828;
-}
-/* ✅ FILE COUNT */
-#mlCount{
-  color:#cdefff !important;
-  font-weight:700;
-}
-
-.masterlist-controls{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr auto;
-  gap:10px;
-  padding:14px;
-  background:#f4f9fc
-}
-.masterlist-controls select,
-.masterlist-controls input{
-  padding:9px 11px;
-  border-radius:9px;
-  border:1px solid #cfe8f3
-}
-.masterlist-body{
-  max-height:65vh;
-  overflow:auto;
-  padding:0; /* ✅ IMPORTANT */
-}
-/* 🚀 FUTURISTIC "SHOW ALL" BUTTON — FORCE WHITE TEXT */
-.masterlist-controls button{
-  background:linear-gradient(135deg,#00364f,#007fa6);
-  color:#ffffff !important;   /* ✅ FORCE white */
-  border:none;
-  border-radius:10px;
-  padding:9px 16px;
-  font-weight:800;
-  cursor:pointer;
-  box-shadow:0 6px 18px rgba(0,234,255,.25);
-  transition:all .25s ease;
-}
-
-.masterlist-controls button:hover{
-  background:linear-gradient(135deg,#00eaff,#6ffff2);
-  color:#ffffff !important;   /* ✅ still white on hover */
-  transform:translateY(-1px);
-  box-shadow:0 10px 26px rgba(0,234,255,.35);
-}
-/* MASTERLIST ROW */
-/* ===== MASTERLIST COLUMN HEADER ===== */
-.ml-header{
-  display:grid;
-  grid-template-columns:1.6fr 160px 160px 140px 150px 40px;
-  gap:12px;
-  padding:10px 6px;
-  background:#f0f6fa;
-  border-bottom:2px solid #dbeaf1;
-  font-size:12px;
-  font-weight:800;
-  color:#0a2433;
-  position:sticky;
-  top:0;
-  z-index:5;
-}
-.ml-row{
-  display:grid;
-  grid-template-columns:1.6fr 160px 160px 140px 150px 40px;
-  gap:12px;
-  padding:10px 6px;
-  border-bottom:1px solid #eef6f9;
-}
-.ml-row > *{
-  min-width:0;
-  word-break:break-word;
-}
-.ml-row a{
-  font-weight:700;
-  color:#007fa6 !important;
-  cursor:pointer;
-}
-/* 🔴 NEW BADGE (MASTERLIST) */
-.ml-new-badge{
-  background:#ff3b3b;
-  color:#fff;
-  font-size:10px;
-  font-weight:800;
-  padding:3px 7px;
-  border-radius:6px;
-  margin-left:8px;
-}
-/* ==============================
-   MOBILE MASTERLIST CLEAN VIEW
-============================== */
-@media (max-width:768px){
-
-  /* PANEL SIZE */
-  .masterlist-box{
-    margin:12px;
-    max-width:none;
-    border-radius:16px;
-  }
-
-  /* HEADER STACK */
-  .masterlist-header{
-    flex-direction:column;
-    align-items:flex-start;
-    gap:6px;
-  }
-
-  .masterlist-header button{
-    position:absolute;
-    top:12px;
-    right:12px;
-  }
-
-  /* CONTROLS STACK */
-  .masterlist-controls{
-    grid-template-columns:1fr;
-    gap:10px;
-  }
-
-  /* HIDE COLUMN HEADER */
-  .ml-header{
-    display:none;
-  }
-
-  /* ROW → CARD */
-  .ml-row{
-    display:block;
-    padding:14px 14px 12px;
-    border-bottom:1px solid #e6f0f6;
-    position:relative;
-  }
-
-  /* FILE NAME */
-  .ml-row a{
-    display:block;
-    font-size:14px;
-    font-weight:800;
-    margin-bottom:8px;
-    line-height:1.35;
-  }
-
-  /* META GRID */
-  .ml-row span{
-    display:flex;
-    justify-content:space-between;
-    font-size:12px;
-    padding:3px 0;
-    color:#5e7d8f;
-  }
-
-  .ml-row span::before{
-    font-weight:700;
-    color:#0a2433;
-  }
-
-  .ml-row span:nth-child(2)::before{content:"Type";}
-  .ml-row span:nth-child(3)::before{content:"Level";}
-  .ml-row span:nth-child(4)::before{content:"Section";}
-  .ml-row span:nth-child(5)::before{content:"Upload Date";}
-
-  /* DOWNLOAD ICON */
-  .ml-row span:last-child{
-    position:absolute;
-    top:14px;
-    right:14px;
-  }
-
-  .ml-row i{
-    background:#00364f;
-    color:#fff;
-    padding:10px;
-    border-radius:10px;
-    font-size:14px;
-  }
+.ml-btn:hover{
+  transform:translateY(-2px);
 }
 </style>
 
 <div class="comm-wrap">
 
+  <!-- HEADER -->
+  <div class="portal-header">
+    <h2 style="margin:0;">📂 QHSSE Communication Hub</h2>
+    <div style="opacity:.85; margin-top:6px; font-size:13px;">
+      Fast access to Communication Pack documents
+    </div>
+  </div>
+
+  <!-- FILTER -->
   <div class="filter-bar">
 
     <div class="filter-item">
       <label>Section</label>
       <select id="typeFilter">
         <option value="">All</option>
-        <option value="HSE">HSE</option>
+        <option value="HSSE">HSSE</option>
         <option value="Quality">Quality</option>
       </select>
     </div>
@@ -430,8 +144,11 @@
       <label>Category</label>
       <select id="levelFilter">
         <option value="">All</option>
-        <option value="Procedure">Procedure</option>
-        <option value="Guideline">Guideline</option>
+        <option value="HSE Alert">HSE Alert</option>
+        <option value="HSE Lessons Learnt">HSE Lessons Learnt</option>
+        <option value="HSE Moment">HSE Moment</option>
+        <option value="HSE Rapid Communication">HSE Rapid Communication</option>
+        <option value="Quality Communication Pack">Quality Communication Pack</option>
       </select>
     </div>
 
@@ -446,6 +163,7 @@
 
   </div>
 
+  <!-- BUTTON -->
   <button class="ml-btn" id="masterBtn">
     <i class="fa-solid fa-folder-open"></i> Open Document Library
   </button>
@@ -454,15 +172,15 @@
 
 <script>
 
-/* ===== SHAREPOINT BASE PATH ===== */
+/* ===== SHAREPOINT BASE ===== */
 const SP_BASE = "https://miscbhd.sharepoint.com/sites/CHSSE/Document%20Library/COMMUNICATION%20PACK";
 
-/* ===== AUTO-FILL CURRENT YEAR ===== */
+/* AUTO YEAR */
 document.addEventListener("DOMContentLoaded", function(){
   document.getElementById("yearInput").value = new Date().getFullYear();
 });
 
-/* ===== BUILD & OPEN FOLDER ===== */
+/* OPEN FOLDER */
 function openFolder(){
 
   const type = document.getElementById("typeFilter").value;
@@ -482,7 +200,7 @@ function openFolder(){
   window.open(fullUrl, "_blank");
 }
 
-/* ===== BUTTON EVENTS ===== */
+/* EVENTS */
 document.getElementById("openBtn").addEventListener("click", openFolder);
 
 document.getElementById("masterBtn").addEventListener("click", function(){
