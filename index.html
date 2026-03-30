@@ -1,3 +1,4 @@
+
 <!-- ICONS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -416,287 +417,76 @@
 
   <div class="filter-bar">
 
-  <div class="filter-item">
-    <label>Section</label>
-    <select id="typeFilter"><option value="">All</option></select>
+    <div class="filter-item">
+      <label>Section</label>
+      <select id="typeFilter">
+        <option value="">All</option>
+        <option value="HSE">HSE</option>
+        <option value="Quality">Quality</option>
+      </select>
+    </div>
+
+    <div class="filter-item">
+      <label>Category</label>
+      <select id="levelFilter">
+        <option value="">All</option>
+        <option value="Procedure">Procedure</option>
+        <option value="Guideline">Guideline</option>
+      </select>
+    </div>
+
+    <div class="filter-item">
+      <label>Year</label>
+      <input id="yearInput" placeholder="Enter Year (e.g. 2025)">
+    </div>
+
+    <input id="searchInput" placeholder="Search (optional)…">
+
+    <button id="openBtn">Open Folder</button>
+
   </div>
 
-  <div class="filter-item">
-    <label>Category</label>
-    <select id="levelFilter"><option value="">All</option></select>
-  </div>
-
-  <div class="filter-item">
-    <label>Year</label>
-    <select id="sectionFilter"><option value="">All</option></select>
-  </div>
-  
-    <input id="searchInput" placeholder="Search file name…">
-    <button onclick="resetFilters()">Reset</button>
-  </div>
-
-  <div id="newFileBanner" class="new-file-banner">
-    <span id="newFileText"></span>
-    <button onclick="openNewFiles()">View New Files</button>
-  </div>
-
-  <button class="ml-btn" onclick="toggleMasterlist()">
-    <i class="fa-solid fa-folder-open"></i> Document Masterlist
+  <button class="ml-btn" id="masterBtn">
+    <i class="fa-solid fa-folder-open"></i> Open Document Library
   </button>
-
-  <div id="fileGrid" class="file-grid"></div>
-  <div id="pagination" class="pagination"></div>
 
 </div>
 
-<div id="masterlistPanel" class="masterlist-panel"
-     onclick="if(event.target.id==='masterlistPanel')toggleMasterlist()">
-
-  <div class="masterlist-box">
-
-    <div class="masterlist-header">
-      📑 Document Masterlist <span id="mlCount">(0 files)</span>
-      <button onclick="toggleMasterlist()">✖</button>
-    </div>
-
-    <div class="masterlist-controls">
-      <select id="mlType"><option value="">All Section</option></select>
-      <select id="mlLevel"><option value="">All Category</option></select>
-      <input id="mlSearch" placeholder="Search document…">
-      <button onclick="clearNewFilter()">Show All</button>
-    </div>
-
-    <!-- SCROLLABLE BODY -->
-    <div class="masterlist-body">
-
-      <!-- COLUMN HEADER -->
-      <div class="ml-header">
-        <span>File Name</span>
-        <span>Section</span>
-        <span>Category</span>
-        <span>Year</span>
-        <span>Upload Date</span>
-        <span>Action</span>
-      </div>
-
-      <!-- DATA ROWS -->
-      <div id="masterlistBody"></div>
-
-    </div> <!-- ✅ masterlist-body -->
-
-  </div> <!-- ✅ masterlist-box -->
-
-</div> <!-- ✅ masterlist-panel -->
-
 <script>
-const SITE="https://miscbhd.sharepoint.com";
-const SITE_PATH="/sites/CHSSE";
-const ROOT="/sites/CHSSE/Document Library/COMMUNICATION PACK";
-const PAGE_SIZE=15, NEW_DAYS=7;
 
-let allFiles=[],currentPage=1,showNewOnly=false,masterlistInit=false;
+/* ===== SHAREPOINT BASE PATH ===== */
+const SP_BASE = "https://miscbhd.sharepoint.com/sites/CHSSE/Document%20Library/COMMUNICATION%20PACK";
 
-const cleanName=n=>n.replace(/\.[^/.]+$/,"");
+/* ===== AUTO-FILL CURRENT YEAR ===== */
+document.addEventListener("DOMContentLoaded", function(){
+  document.getElementById("yearInput").value = new Date().getFullYear();
+});
 
-/* ✅ NEW = UploadDate (Power Automate) */
-const isNew=f=>{
-  return f.uploadDate && (new Date()-f.uploadDate)/(1000*60*60*24)<=NEW_DAYS;
-};
+/* ===== BUILD & OPEN FOLDER ===== */
+function openFolder(){
 
-function openFile(u){window.open(SITE+u,"_blank")}
-function downloadFile(u){
-  const a=document.createElement("a");
-  a.href=SITE+u+"?download=1";
-  a.download="";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  const type = document.getElementById("typeFilter").value;
+  const level = document.getElementById("levelFilter").value;
+  const year = document.getElementById("yearInput").value.trim();
+
+  let parts = [];
+
+  if(type) parts.push(type);
+  if(level) parts.push(level);
+  if(year) parts.push(year);
+
+  const path = parts.join("/");
+
+  const fullUrl = SP_BASE + (path ? "/" + path : "");
+
+  window.open(fullUrl, "_blank");
 }
 
-async function spGet(u){
-  return (await fetch(u,{headers:{Accept:"application/json;odata=nometadata"}})).json();
-}
-async function getFolders(p){
-  return spGet(`${SITE}${SITE_PATH}/_api/web/GetFolderByServerRelativeUrl('${p}')/Folders`);
-}
-async function getFiles(p){
-  return spGet(`${SITE}${SITE_PATH}/_api/web/GetFolderByServerRelativeUrl('${p}')/Files?$select=Name,ServerRelativeUrl,ListItemAllFields/UploadDate&$expand=ListItemAllFields`);
-}
+/* ===== BUTTON EVENTS ===== */
+document.getElementById("openBtn").addEventListener("click", openFolder);
 
-async function scanFolder(path,meta={}){
-  const folders=(await getFolders(path)).value.filter(f=>f.Name!=="Forms");
-  const files=(await getFiles(path)).value;
+document.getElementById("masterBtn").addEventListener("click", function(){
+  window.open(SP_BASE, "_blank");
+});
 
-  for(const f of files){
-    allFiles.push({
-      type:meta.type||"",
-      level:meta.level||"",
-      section:meta.section||"",
-      name:f.Name,
-      url:f.ServerRelativeUrl,
-      uploadDate: f.ListItemAllFields?.UploadDate ? new Date(f.ListItemAllFields.UploadDate) : null
-    });
-  }
-
-  for(const folder of folders){
-    const next={...meta};
-    if(!meta.type) next.type=folder.Name;
-    else if(!meta.level) next.level=folder.Name;
-    else if(!meta.section) next.section=folder.Name;
-    await scanFolder(`${path}/${folder.Name}`,next);
-  }
-}
-
-async function loadData(){
-  allFiles=[];
-  await scanFolder(ROOT);
-  initMainFilters();
-  render();
-  checkNewFiles();
-}
-
-function checkNewFiles(){
-  const count=allFiles.filter(isNew).length;
-  if(count>0){
-    newFileText.textContent=`📢 ${count} new files uploaded`;
-    newFileBanner.style.display="flex";
-  }else newFileBanner.style.display="none";
-}
-
-function openNewFiles(){
-  showNewOnly = true;
-  toggleMasterlist(true); // ✅ tell masterlist this is NEW mode
-}
-
-/* ===== rest unchanged ===== */
-function initMainFilters(){
-
-  // Populate ALL options once (no dependency)
-  fill(typeFilter,[...new Set(allFiles.map(f=>f.type).filter(Boolean))]);
-  fill(levelFilter,[...new Set(allFiles.map(f=>f.level).filter(Boolean))]);
-  fill(sectionFilter,[...new Set(allFiles.map(f=>f.section).filter(Boolean))]);
-
-  // All filters just trigger render (no cascading)
-  typeFilter.onchange =
-  levelFilter.onchange =
-  sectionFilter.onchange =
-  searchInput.oninput = () => {
-    currentPage = 1;
-    render();
-  };
-}
-
-function fill(sel,arr){
-  sel.innerHTML='<option value="">All</option>';
-  arr.forEach(v=>sel.innerHTML+=`<option>${v}</option>`);
-}
-
-function resetFilters(){
-  typeFilter.value=levelFilter.value=sectionFilter.value=searchInput.value="";
-  initMainFilters();
-  render();
-}
-
-/* ===== MASTERLIST ===== */
-function initMasterlistFilters(){
-  if(masterlistInit) return;
-  masterlistInit=true;
-
-  fill(mlType,[...new Set(allFiles.map(f=>f.type).filter(Boolean))]);
-  fill(mlLevel,[...new Set(allFiles.map(f=>f.level).filter(Boolean))]);
-
-  mlType.onchange=()=>{
-    fill(mlLevel,[...new Set(allFiles.filter(f=>!mlType.value||f.type===mlType.value).map(f=>f.level).filter(Boolean))]);
-    renderMasterlist();
-  };
-  mlLevel.onchange=mlSearch.oninput=renderMasterlist;
-}
-
-function toggleMasterlist(fromNew=false){
-  if(!fromNew) showNewOnly = false;   // ✅ reset when normal open
-
-  masterlistPanel.classList.toggle("active");
-  if(masterlistPanel.classList.contains("active")){
-    initMasterlistFilters();
-    renderMasterlist();
-  }
-}
-
-function renderMasterlist(){
-  let data=[...allFiles];
-  if(showNewOnly) data=data.filter(isNew);
-
-  if(mlType.value) data=data.filter(f=>f.type===mlType.value);
-  if(mlLevel.value) data=data.filter(f=>f.level===mlLevel.value);
-  if(mlSearch.value){
-    const q=mlSearch.value.toLowerCase();
-    data=data.filter(f=>f.name.toLowerCase().includes(q));
-  }
-
-  masterlistBody.innerHTML="";
-  mlCount.innerText=`(${data.length} files)`;
-
-  data
-    .sort((a,b)=>(b.uploadDate||0)-(a.uploadDate||0))
-    .forEach(f=>{
-      masterlistBody.innerHTML+=`
-        <div class="ml-row">
-          <a onclick="openFile('${f.url}')">
-            ${cleanName(f.name)}
-            ${isNew(f)?'<span class="ml-new-badge">NEW</span>':''}
-          </a>
-          <span>${f.type}</span>
-          <span>${f.level}</span>
-          <span>${f.section}</span>
-          <span>${f.uploadDate ? f.uploadDate.toLocaleDateString() : '-'}</span>
-          <span>
-            <i class="fa-solid fa-download" onclick="downloadFile('${f.url}')"></i>
-          </span>
-        </div>`;
-    });
-}
-
-/* ===== GRID ===== */
-function render(){
-  fileGrid.innerHTML="";
-  pagination.innerHTML="";
-  let data=allFiles.filter(f=>
-    (!typeFilter.value||f.type===typeFilter.value)&&
-    (!levelFilter.value||f.level===levelFilter.value)&&
-    (!sectionFilter.value||f.section===sectionFilter.value)&&
-    (!searchInput.value||f.name.toLowerCase().includes(searchInput.value.toLowerCase()))
-  );
-
-  const pages=Math.ceil(data.length/PAGE_SIZE);
-  data.slice((currentPage-1)*PAGE_SIZE,currentPage*PAGE_SIZE).forEach(f=>{
-    fileGrid.innerHTML+=`
-      <div class="file-card">
-        ${isNew(f)?'<div class="file-new">NEW</div>':''}
-        <div class="file-title">${cleanName(f.name)}</div>
-        <div class="file-meta">${[f.type,f.level,f.section].filter(Boolean).join(" · ")}</div>
-        <div class="file-actions">
-          <i class="fa-solid fa-eye" onclick="openFile('${f.url}')"></i>
-          <i class="fa-solid fa-download" onclick="downloadFile('${f.url}')"></i>
-        </div>
-      </div>`;
-  });
-
-  for(let i=1;i<=pages;i++){
-    pagination.innerHTML+=`<button class="${i===currentPage?'active':''}" onclick="currentPage=${i};render()">${i}</button>`;
-  }
-}
-
-function clearNewFilter(){
-  showNewOnly = false;
-
-  // reset masterlist filters
-  mlType.value = "";
-  mlLevel.value = "";
-  mlSearch.value = "";
-
-  renderMasterlist();
-}
-
-
-loadData();
 </script>
