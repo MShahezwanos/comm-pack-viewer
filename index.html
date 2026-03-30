@@ -1,0 +1,702 @@
+<!-- ICONS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --dark:#0b2236;
+  --accent:#00eaff;
+  --danger:#ff3b3b;
+  --bg:#ffffff;
+  --text:#0a2433;
+  --muted:#5e7d8f;
+  --border:#dbeaf1;
+}
+*{box-sizing:border-box}
+
+/* ===== layout & UI ===== */
+.comm-wrap{
+  max-width:1700px;
+  margin:20px auto;
+  padding:20px;
+  font-family:Inter,Segoe UI,system-ui
+}
+
+/* FILTER BAR */
+.filter-bar{
+  display:grid;
+  grid-template-columns:repeat(3,1fr) 1.6fr 120px;
+  gap:12px;
+  margin-bottom:18px;
+}
+@media(max-width:768px){
+  .filter-bar{grid-template-columns:1fr}
+}
+.filter-bar select,
+.filter-bar input{
+  padding:13px 14px;
+  border-radius:12px;
+  border:1px solid rgba(0,234,255,.35);
+  background:var(--dark);
+  color:#fff;
+}
+.filter-bar input::placeholder{color:#cdefff}
+.filter-bar button{
+  background:linear-gradient(135deg,#006d8f,#00bcd4);
+  color:#001019;
+  border:none;
+  border-radius:12px;
+  font-weight:800;
+  cursor:pointer;
+}
+.filter-bar button:hover{
+  background:linear-gradient(135deg,#e53935,#ff5252); /* red */
+  color:#ffffff;                                     /* white text */
+  transform:translateY(-1px);
+  box-shadow:0 8px 20px rgba(229,57,53,.35);
+}
+.filter-item{
+  display:flex;
+  flex-direction:column;
+}
+
+.filter-item label{
+  font-size:11px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.6px;
+  color:#bfefff;
+
+  /* ⬆️ push label clearly above */
+  margin-bottom:6px;
+}
+
+/* ===== NEW FILE BANNER ===== */
+.new-file-banner{
+  display:none;
+  background:linear-gradient(135deg,#004d66,#007c9c);
+  color:#fff;
+  padding:16px 20px;
+  border-radius:16px;
+  margin-bottom:18px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+  box-shadow:0 10px 26px rgba(0,0,0,.18);
+}
+#newFileText{font-weight:700}
+.new-file-banner button{
+  padding:10px 18px;
+  border-radius:12px;
+  border:none;
+  font-weight:800;
+  cursor:pointer;
+  background:linear-gradient(135deg,#00eaff,#6ffff2);
+  color:#001019;
+}
+
+/* MASTERLIST BUTTON */
+.ml-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:11px 20px;
+  border-radius:14px;
+  border:1px solid rgba(0,234,255,.35);
+  background:linear-gradient(135deg,#00364f,#005f7a);
+  color:#fff;
+  font-weight:800;
+  cursor:pointer;
+  margin-bottom:20px; /* ✅ adds breathing space */
+}
+
+/* GRID */
+.file-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:18px
+}
+.file-card{
+  background:#fff;
+  border-radius:16px;
+  padding:16px;
+  border:1px solid var(--border);
+  position:relative;
+}
+.file-new{
+  position:absolute;
+  top:10px;
+  right:10px;
+  background:var(--danger);
+  color:#fff;
+  font-size:10px;
+  padding:4px 8px;
+  border-radius:8px;
+  font-weight:800;
+}
+.file-title{
+  font-size:15px;
+  font-weight:800;
+  color:var(--text);
+  line-height:1.35;
+  word-break:break-word;
+  overflow-wrap:anywhere;
+}
+.file-meta{
+  font-size:11px;
+  color:var(--muted);
+  margin:6px 0 12px
+}
+.file-actions{
+  display:flex;
+  gap:10px
+}
+.file-actions i{
+  font-size:15px;
+  color:#fff;
+  background:#00364f;
+  padding:9px;
+  border-radius:9px;
+  cursor:pointer;
+}
+
+/* PAGINATION */
+.pagination{
+  display:flex;
+  justify-content:center;
+  gap:6px;
+  margin-top:22px
+}
+.pagination button{
+  padding:7px 12px;
+  border-radius:8px;
+  border:1px solid #bfefff;
+  background:#00364f;
+  color:#fff;
+  font-weight:700;
+}
+.pagination button.active{
+  background:var(--accent);
+  color:#001019
+}
+
+/* ===== MASTERLIST ===== */
+.masterlist-panel{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  display:none;
+  z-index:5000
+}
+.masterlist-panel.active{display:block}
+.masterlist-box{
+  background:#fff;
+  max-width:1100px;
+  margin:40px auto;
+  border-radius:18px;
+  overflow:hidden
+}
+
+/* ⚠️ global text rule (kept) */
+.masterlist-box,.masterlist-box *{
+  color:#0a2433 !important
+}
+
+/* ✅ HARD OVERRIDE FOR HEADER */
+.masterlist-header,
+.masterlist-header *{
+  color:#ffffff !important;
+}
+.masterlist-header{
+  background:#0b2236;
+  padding:16px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:900;
+  position:relative; /* ✅ IMPORTANT */
+}
+/* 🔴 CLOSE (X) BUTTON */
+.masterlist-header button{
+  background:#e53935;
+  color:#ffffff;
+  border:none;
+  width:34px;
+  height:34px;
+  border-radius:8px;
+  font-size:16px;
+  font-weight:900;
+  cursor:pointer;
+
+  /* ✅ keep it inside header */
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.masterlist-header button:hover{
+  background:#c62828;
+}
+/* ✅ FILE COUNT */
+#mlCount{
+  color:#cdefff !important;
+  font-weight:700;
+}
+
+.masterlist-controls{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr auto;
+  gap:10px;
+  padding:14px;
+  background:#f4f9fc
+}
+.masterlist-controls select,
+.masterlist-controls input{
+  padding:9px 11px;
+  border-radius:9px;
+  border:1px solid #cfe8f3
+}
+.masterlist-body{
+  max-height:65vh;
+  overflow:auto;
+  padding:0; /* ✅ IMPORTANT */
+}
+/* 🚀 FUTURISTIC "SHOW ALL" BUTTON — FORCE WHITE TEXT */
+.masterlist-controls button{
+  background:linear-gradient(135deg,#00364f,#007fa6);
+  color:#ffffff !important;   /* ✅ FORCE white */
+  border:none;
+  border-radius:10px;
+  padding:9px 16px;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 6px 18px rgba(0,234,255,.25);
+  transition:all .25s ease;
+}
+
+.masterlist-controls button:hover{
+  background:linear-gradient(135deg,#00eaff,#6ffff2);
+  color:#ffffff !important;   /* ✅ still white on hover */
+  transform:translateY(-1px);
+  box-shadow:0 10px 26px rgba(0,234,255,.35);
+}
+/* MASTERLIST ROW */
+/* ===== MASTERLIST COLUMN HEADER ===== */
+.ml-header{
+  display:grid;
+  grid-template-columns:1.6fr 160px 160px 140px 150px 40px;
+  gap:12px;
+  padding:10px 6px;
+  background:#f0f6fa;
+  border-bottom:2px solid #dbeaf1;
+  font-size:12px;
+  font-weight:800;
+  color:#0a2433;
+  position:sticky;
+  top:0;
+  z-index:5;
+}
+.ml-row{
+  display:grid;
+  grid-template-columns:1.6fr 160px 160px 140px 150px 40px;
+  gap:12px;
+  padding:10px 6px;
+  border-bottom:1px solid #eef6f9;
+}
+.ml-row > *{
+  min-width:0;
+  word-break:break-word;
+}
+.ml-row a{
+  font-weight:700;
+  color:#007fa6 !important;
+  cursor:pointer;
+}
+/* 🔴 NEW BADGE (MASTERLIST) */
+.ml-new-badge{
+  background:#ff3b3b;
+  color:#fff;
+  font-size:10px;
+  font-weight:800;
+  padding:3px 7px;
+  border-radius:6px;
+  margin-left:8px;
+}
+/* ==============================
+   MOBILE MASTERLIST CLEAN VIEW
+============================== */
+@media (max-width:768px){
+
+  /* PANEL SIZE */
+  .masterlist-box{
+    margin:12px;
+    max-width:none;
+    border-radius:16px;
+  }
+
+  /* HEADER STACK */
+  .masterlist-header{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:6px;
+  }
+
+  .masterlist-header button{
+    position:absolute;
+    top:12px;
+    right:12px;
+  }
+
+  /* CONTROLS STACK */
+  .masterlist-controls{
+    grid-template-columns:1fr;
+    gap:10px;
+  }
+
+  /* HIDE COLUMN HEADER */
+  .ml-header{
+    display:none;
+  }
+
+  /* ROW → CARD */
+  .ml-row{
+    display:block;
+    padding:14px 14px 12px;
+    border-bottom:1px solid #e6f0f6;
+    position:relative;
+  }
+
+  /* FILE NAME */
+  .ml-row a{
+    display:block;
+    font-size:14px;
+    font-weight:800;
+    margin-bottom:8px;
+    line-height:1.35;
+  }
+
+  /* META GRID */
+  .ml-row span{
+    display:flex;
+    justify-content:space-between;
+    font-size:12px;
+    padding:3px 0;
+    color:#5e7d8f;
+  }
+
+  .ml-row span::before{
+    font-weight:700;
+    color:#0a2433;
+  }
+
+  .ml-row span:nth-child(2)::before{content:"Type";}
+  .ml-row span:nth-child(3)::before{content:"Level";}
+  .ml-row span:nth-child(4)::before{content:"Section";}
+  .ml-row span:nth-child(5)::before{content:"Upload Date";}
+
+  /* DOWNLOAD ICON */
+  .ml-row span:last-child{
+    position:absolute;
+    top:14px;
+    right:14px;
+  }
+
+  .ml-row i{
+    background:#00364f;
+    color:#fff;
+    padding:10px;
+    border-radius:10px;
+    font-size:14px;
+  }
+}
+</style>
+
+<div class="comm-wrap">
+
+  <div class="filter-bar">
+
+  <div class="filter-item">
+    <label>Section</label>
+    <select id="typeFilter"><option value="">All</option></select>
+  </div>
+
+  <div class="filter-item">
+    <label>Category</label>
+    <select id="levelFilter"><option value="">All</option></select>
+  </div>
+
+  <div class="filter-item">
+    <label>Year</label>
+    <select id="sectionFilter"><option value="">All</option></select>
+  </div>
+  
+    <input id="searchInput" placeholder="Search file name…">
+    <button onclick="resetFilters()">Reset</button>
+  </div>
+
+  <div id="newFileBanner" class="new-file-banner">
+    <span id="newFileText"></span>
+    <button onclick="openNewFiles()">View New Files</button>
+  </div>
+
+  <button class="ml-btn" onclick="toggleMasterlist()">
+    <i class="fa-solid fa-folder-open"></i> Document Masterlist
+  </button>
+
+  <div id="fileGrid" class="file-grid"></div>
+  <div id="pagination" class="pagination"></div>
+
+</div>
+
+<div id="masterlistPanel" class="masterlist-panel"
+     onclick="if(event.target.id==='masterlistPanel')toggleMasterlist()">
+
+  <div class="masterlist-box">
+
+    <div class="masterlist-header">
+      📑 Document Masterlist <span id="mlCount">(0 files)</span>
+      <button onclick="toggleMasterlist()">✖</button>
+    </div>
+
+    <div class="masterlist-controls">
+      <select id="mlType"><option value="">All Section</option></select>
+      <select id="mlLevel"><option value="">All Category</option></select>
+      <input id="mlSearch" placeholder="Search document…">
+      <button onclick="clearNewFilter()">Show All</button>
+    </div>
+
+    <!-- SCROLLABLE BODY -->
+    <div class="masterlist-body">
+
+      <!-- COLUMN HEADER -->
+      <div class="ml-header">
+        <span>File Name</span>
+        <span>Section</span>
+        <span>Category</span>
+        <span>Year</span>
+        <span>Upload Date</span>
+        <span>Action</span>
+      </div>
+
+      <!-- DATA ROWS -->
+      <div id="masterlistBody"></div>
+
+    </div> <!-- ✅ masterlist-body -->
+
+  </div> <!-- ✅ masterlist-box -->
+
+</div> <!-- ✅ masterlist-panel -->
+
+<script>
+const SITE="https://miscbhd.sharepoint.com";
+const SITE_PATH="/sites/CHSSE";
+const ROOT="/sites/CHSSE/Document Library/COMMUNICATION PACK";
+const PAGE_SIZE=15, NEW_DAYS=7;
+
+let allFiles=[],currentPage=1,showNewOnly=false,masterlistInit=false;
+
+const cleanName=n=>n.replace(/\.[^/.]+$/,"");
+
+/* ✅ NEW = UploadDate (Power Automate) */
+const isNew=f=>{
+  return f.uploadDate && (new Date()-f.uploadDate)/(1000*60*60*24)<=NEW_DAYS;
+};
+
+function openFile(u){window.open(SITE+u,"_blank")}
+function downloadFile(u){
+  const a=document.createElement("a");
+  a.href=SITE+u+"?download=1";
+  a.download="";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+async function spGet(u){
+  return (await fetch(u,{headers:{Accept:"application/json;odata=nometadata"}})).json();
+}
+async function getFolders(p){
+  return spGet(`${SITE}${SITE_PATH}/_api/web/GetFolderByServerRelativeUrl('${p}')/Folders`);
+}
+async function getFiles(p){
+  return spGet(`${SITE}${SITE_PATH}/_api/web/GetFolderByServerRelativeUrl('${p}')/Files?$select=Name,ServerRelativeUrl,ListItemAllFields/UploadDate&$expand=ListItemAllFields`);
+}
+
+async function scanFolder(path,meta={}){
+  const folders=(await getFolders(path)).value.filter(f=>f.Name!=="Forms");
+  const files=(await getFiles(path)).value;
+
+  for(const f of files){
+    allFiles.push({
+      type:meta.type||"",
+      level:meta.level||"",
+      section:meta.section||"",
+      name:f.Name,
+      url:f.ServerRelativeUrl,
+      uploadDate: f.ListItemAllFields?.UploadDate ? new Date(f.ListItemAllFields.UploadDate) : null
+    });
+  }
+
+  for(const folder of folders){
+    const next={...meta};
+    if(!meta.type) next.type=folder.Name;
+    else if(!meta.level) next.level=folder.Name;
+    else if(!meta.section) next.section=folder.Name;
+    await scanFolder(`${path}/${folder.Name}`,next);
+  }
+}
+
+async function loadData(){
+  allFiles=[];
+  await scanFolder(ROOT);
+  initMainFilters();
+  render();
+  checkNewFiles();
+}
+
+function checkNewFiles(){
+  const count=allFiles.filter(isNew).length;
+  if(count>0){
+    newFileText.textContent=`📢 ${count} new files uploaded`;
+    newFileBanner.style.display="flex";
+  }else newFileBanner.style.display="none";
+}
+
+function openNewFiles(){
+  showNewOnly = true;
+  toggleMasterlist(true); // ✅ tell masterlist this is NEW mode
+}
+
+/* ===== rest unchanged ===== */
+function initMainFilters(){
+
+  // Populate ALL options once (no dependency)
+  fill(typeFilter,[...new Set(allFiles.map(f=>f.type).filter(Boolean))]);
+  fill(levelFilter,[...new Set(allFiles.map(f=>f.level).filter(Boolean))]);
+  fill(sectionFilter,[...new Set(allFiles.map(f=>f.section).filter(Boolean))]);
+
+  // All filters just trigger render (no cascading)
+  typeFilter.onchange =
+  levelFilter.onchange =
+  sectionFilter.onchange =
+  searchInput.oninput = () => {
+    currentPage = 1;
+    render();
+  };
+}
+
+function fill(sel,arr){
+  sel.innerHTML='<option value="">All</option>';
+  arr.forEach(v=>sel.innerHTML+=`<option>${v}</option>`);
+}
+
+function resetFilters(){
+  typeFilter.value=levelFilter.value=sectionFilter.value=searchInput.value="";
+  initMainFilters();
+  render();
+}
+
+/* ===== MASTERLIST ===== */
+function initMasterlistFilters(){
+  if(masterlistInit) return;
+  masterlistInit=true;
+
+  fill(mlType,[...new Set(allFiles.map(f=>f.type).filter(Boolean))]);
+  fill(mlLevel,[...new Set(allFiles.map(f=>f.level).filter(Boolean))]);
+
+  mlType.onchange=()=>{
+    fill(mlLevel,[...new Set(allFiles.filter(f=>!mlType.value||f.type===mlType.value).map(f=>f.level).filter(Boolean))]);
+    renderMasterlist();
+  };
+  mlLevel.onchange=mlSearch.oninput=renderMasterlist;
+}
+
+function toggleMasterlist(fromNew=false){
+  if(!fromNew) showNewOnly = false;   // ✅ reset when normal open
+
+  masterlistPanel.classList.toggle("active");
+  if(masterlistPanel.classList.contains("active")){
+    initMasterlistFilters();
+    renderMasterlist();
+  }
+}
+
+function renderMasterlist(){
+  let data=[...allFiles];
+  if(showNewOnly) data=data.filter(isNew);
+
+  if(mlType.value) data=data.filter(f=>f.type===mlType.value);
+  if(mlLevel.value) data=data.filter(f=>f.level===mlLevel.value);
+  if(mlSearch.value){
+    const q=mlSearch.value.toLowerCase();
+    data=data.filter(f=>f.name.toLowerCase().includes(q));
+  }
+
+  masterlistBody.innerHTML="";
+  mlCount.innerText=`(${data.length} files)`;
+
+  data
+    .sort((a,b)=>(b.uploadDate||0)-(a.uploadDate||0))
+    .forEach(f=>{
+      masterlistBody.innerHTML+=`
+        <div class="ml-row">
+          <a onclick="openFile('${f.url}')">
+            ${cleanName(f.name)}
+            ${isNew(f)?'<span class="ml-new-badge">NEW</span>':''}
+          </a>
+          <span>${f.type}</span>
+          <span>${f.level}</span>
+          <span>${f.section}</span>
+          <span>${f.uploadDate ? f.uploadDate.toLocaleDateString() : '-'}</span>
+          <span>
+            <i class="fa-solid fa-download" onclick="downloadFile('${f.url}')"></i>
+          </span>
+        </div>`;
+    });
+}
+
+/* ===== GRID ===== */
+function render(){
+  fileGrid.innerHTML="";
+  pagination.innerHTML="";
+  let data=allFiles.filter(f=>
+    (!typeFilter.value||f.type===typeFilter.value)&&
+    (!levelFilter.value||f.level===levelFilter.value)&&
+    (!sectionFilter.value||f.section===sectionFilter.value)&&
+    (!searchInput.value||f.name.toLowerCase().includes(searchInput.value.toLowerCase()))
+  );
+
+  const pages=Math.ceil(data.length/PAGE_SIZE);
+  data.slice((currentPage-1)*PAGE_SIZE,currentPage*PAGE_SIZE).forEach(f=>{
+    fileGrid.innerHTML+=`
+      <div class="file-card">
+        ${isNew(f)?'<div class="file-new">NEW</div>':''}
+        <div class="file-title">${cleanName(f.name)}</div>
+        <div class="file-meta">${[f.type,f.level,f.section].filter(Boolean).join(" · ")}</div>
+        <div class="file-actions">
+          <i class="fa-solid fa-eye" onclick="openFile('${f.url}')"></i>
+          <i class="fa-solid fa-download" onclick="downloadFile('${f.url}')"></i>
+        </div>
+      </div>`;
+  });
+
+  for(let i=1;i<=pages;i++){
+    pagination.innerHTML+=`<button class="${i===currentPage?'active':''}" onclick="currentPage=${i};render()">${i}</button>`;
+  }
+}
+
+function clearNewFilter(){
+  showNewOnly = false;
+
+  // reset masterlist filters
+  mlType.value = "";
+  mlLevel.value = "";
+  mlSearch.value = "";
+
+  renderMasterlist();
+}
+
+
+loadData();
+</script>
